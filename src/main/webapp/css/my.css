@@ -27,6 +27,9 @@ button.btn {
     margin: 4px 2px;
     cursor: pointer;
 }
+.save{
+    visibility: hidden;
+}
 
 button.active {
     background-color: #fdafd9;

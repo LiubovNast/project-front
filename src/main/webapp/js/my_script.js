@@ -43,7 +43,8 @@ function getTable(response) {
             '<td>' + user.level + '</td>' +
             '<td>' + user.birthday + '</td>' +
             '<td id="banned' + user.id + '" class="' + user.banned + '">' + user.banned + '</td>' +
-            '<td><img class="edit" id="edit' + user.id + '" src="../img/edit.png" onclick="editUser(this.id, ' + user.id + ')"></td>' +
+            '<td><img class="edit" id="edit' + user.id + '" src="../img/edit.png" onclick="editUser(this.id, ' + user.id + ')">' +
+            '<img class="save" id="save' + user.id + '" src="../img/save.png" onclick="save(' + user.id + ')"></td>' +
             '<td><img class="delete" id="' + user.id + '" src="../img/remove.png" onclick="deleteUser(this.id)"></td>' +
             '</tr>');
     }
@@ -53,26 +54,22 @@ function deleteUser(id) {
     $.ajax({
         type: "DELETE",
         url: "/rest/players/" + id,
-        success: function () {
-            const page = document.getElementById('pages').getElementsByClassName('active');
-            const active = page.item(0).value;
-            getAccountsList(active);
-        }
+        success: drawActive()
     });
 }
 
-function editUser(id, id_delete) {
-    var image = document.getElementById(id);
-    image.src = "../img/save.png";
-    document.getElementById(id_delete).style.visibility = 'hidden';
-    name = document.getElementById('name' + id_delete).className;
-    title = document.getElementById('title' + id_delete).className;
-    race = document.getElementById('race' + id_delete).className;
-    profession = document.getElementById('profession' + id_delete).className;
-    banned = document.getElementById('banned' + id_delete).className;
-    $('#name' + id_delete).html('<input type="text" placeholder="' + name + '" value="' + name + '">');
-    $('#title' + id_delete).html('<input type="text" placeholder="' + title + '" value="' + title + '">');
-    $('#race' + id_delete).html('<select>\n' +
+function editUser(edit, id) {
+    document.getElementById(edit).style.visibility = 'hidden';
+    document.getElementById('save' + id).style.visibility = 'visible';
+    document.getElementById(id).style.visibility = 'hidden';
+    let name = document.getElementById('name' + id).className;
+    let title = document.getElementById('title' + id).className;
+    let race = document.getElementById('race' + id).className;
+    let profession = document.getElementById('profession' + id).className;
+    let banned = document.getElementById('banned' + id).className;
+    $('#name' + id).html('<input type="text" id="input-name" placeholder="' + name + '" value="' + name + '">');
+    $('#title' + id).html('<input type="text" id="input-title" placeholder="' + title + '" value="' + title + '">');
+    $('#race' + id).html('<select id="select-race">\n' +
         '            <option value="' + race + '" selected="selected">' + race + '</option>\n' +
         '            <option value="HUMAN">HUMAN</option>\n' +
         '            <option value="DWARF">DWARF</option>\n' +
@@ -82,7 +79,7 @@ function editUser(id, id_delete) {
         '            <option value="TROLL">TROLL</option>\n' +
         '            <option value="HOBBIT">HOBBIT</option>\n' +
         '        </select>');
-    $('#profession' + id_delete).html('<select>\n' +
+    $('#profession' + id).html('<select id="select-prof">\n' +
         '            <option value="' + profession + '" selected="selected">' + profession + '</option>\n' +
         '            <option value="WARRIOR">WARRIOR</option>\n' +
         '            <option value="ROGUE">ROGUE</option>\n' +
@@ -93,9 +90,39 @@ function editUser(id, id_delete) {
         '            <option value="WARLOCK">WARLOCK</option>\n' +
         '            <option value="DRUID">DRUID</option>\n' +
         '        </select>');
-    $('#banned' + id_delete).html('<select>\n' +
+    $('#banned' + id).html('<select id="select-ban">\n' +
         '            <option value="' + banned + '" selected="selected">' + banned + '</option>\n' +
         '            <option value="true">true</option>\n' +
         '            <option value="false">false</option>\n' +
         '        </select>');
+}
+
+function save(id) {
+    let name = document.getElementById('input-name').value;
+    let title = document.getElementById('input-title').value;
+    let race = document.getElementById('select-race').value;
+    let profession = document.getElementById('select-prof').value;
+    let banned = document.getElementById('select-ban').value;
+
+    const obj = {
+        "name": name,
+        "title": title,
+        "race": race,
+        "profession": profession,
+        "banned": banned
+    };
+    const myJSON = JSON.stringify(obj);
+    $.ajax({
+        contentType: 'application/json; charset=UTF-8',
+        type: "POST",
+        url: "/rest/players/" + id,
+        data: myJSON,
+        success: drawActive()
+    });
+}
+
+function drawActive() {
+    const page = document.getElementById('pages').getElementsByClassName('active');
+    const active = page.item(0).value;
+    getAccountsList(active);
 }

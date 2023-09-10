@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>RPG</title>
@@ -6,6 +7,36 @@
 </head>
 <body>
 <h1>RPG admin panel</h1>
+<br>
+<h2>Accounts list:</h2>
+<script type="text/javascript" src="../js/my_script.js"></script>
+
+<table class="tb" id="users">
+    <div class="count">
+        <h4>Count per page: </h4>
+        <select name="amount" id="select" onchange="getAccountsList(1)">
+            <option value="3" selected="selected">3</option>
+            <option value="7">7</option>
+            <option value="15">15</option>
+            <option value="20">20</option>
+        </select>
+    </div>
+    <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Title</th>
+        <th>Race</th>
+        <th>Profession</th>
+        <th>Level</th>
+        <th>Birthday</th>
+        <th>Banned</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+</table>
+<h4>Pages</h4>
+<div id="pages" class="pagination">
+</div>
 
 </body>
 </html>

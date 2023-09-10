@@ -1,0 +1,43 @@
+body {
+    background-color: #fdeddb;
+    text-align: center;
+}
+table {
+    align-self: center;
+}
+table.tb { text-align-all: center; border-collapse: collapse; width:300px; }
+.tb th, .tb td { padding: 5px; border: solid 1px #777; }
+.tb th { background-color: lightblue;}
+
+.h2 { text-align: center;
+}
+.pagination {
+    display: inline-block;
+}
+
+button.btn {
+    background-color: #7cb681; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+
+button.active {
+    background-color: #fdafd9;
+    color: black;
+    border-radius: 5px;
+}
+
+button.hidden {
+    visibility: hidden;
+}
+
+.count {
+    display: inline;
+}

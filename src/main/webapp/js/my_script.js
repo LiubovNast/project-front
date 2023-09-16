@@ -3,19 +3,19 @@ $.get("/rest/players", function (response) {
     getPages(14, 1);
 });
 
-function getUsers(number, size) {
+function getUsers(page, size) {
     $("td").remove();
-    $.get("/rest/players", {pageNumber: number, pageSize: size}, function (response) {
-        getTable(response);
+    $.get("/rest/players", {pageNumber: page, pageSize: size}, function (users) {
+        getTable(users);
     });
 }
 
 
-function getPages(number, active) {
+function getPages(pages, active) {
     if (1 == active) {
         $('#pages').html('<button value="' + 1 + '" class="btn active">' + 1 + '</button>');
     } else $('#pages').html('<button class="btn" onclick="getAccountsList(1)">' + 1 + '</button>');
-    for (let i = 2; i < number + 1; i++) {
+    for (let i = 2; i <= pages; i++) {
         if (i == active) {
             $('#pages').append('<button value="' + i + '" class="btn active">' + i + '</button>');
         } else $('#pages').append('<button class="btn" onclick="getAccountsList(' + i + ')">' + i + '</button>');
@@ -23,17 +23,21 @@ function getPages(number, active) {
 }
 
 function getAccountsList(active) {
-    let amount = document.getElementById("select");
-    $.get("/rest/players/count", function (response) {
-        var number = parseInt(response / parseInt(amount.value));
-        getPages(number, active);
+    let amount = document.getElementById("select").value;
+    $.get("/rest/players/count", function (users) {
+        let size = parseInt(parseInt(users) / parseInt(amount));
+        if (users % amount > 0) {
+            size = size + 1;
+        }
+        getPages(size, active);
     });
-    getUsers(active - 1, amount.value);
+    getUsers(active - 1, amount);
 }
 
 function getTable(response) {
     for (const i in response) {
         var user = response[i];
+        let birth = new Date(user.birthday).toLocaleDateString();
         $('#users').append('<tr>' +
             '<td>' + user.id + '</td>' +
             '<td id="name' + user.id + '" class="' + user.name + '">' + user.name + '</td>' +
@@ -41,7 +45,7 @@ function getTable(response) {
             '<td id="race' + user.id + '" class="' + user.race + '">' + user.race + '</td>' +
             '<td id="profession' + user.id + '" class="' + user.profession + '">' + user.profession + '</td>' +
             '<td>' + user.level + '</td>' +
-            '<td>' + user.birthday + '</td>' +
+            '<td>' + birth + '</td>' +
             '<td id="banned' + user.id + '" class="' + user.banned + '">' + user.banned + '</td>' +
             '<td><img class="edit" id="edit' + user.id + '" src="../img/edit.png" onclick="editUser(this.id, ' + user.id + ')">' +
             '<img class="save" id="save' + user.id + '" src="../img/save.png" onclick="save(' + user.id + ')"></td>' +
@@ -97,6 +101,42 @@ function editUser(edit, id) {
         '        </select>');
 }
 
+function saveUser() {
+    var elements = document.forms["create"].elements;
+
+    let name = elements[0].value;
+    let title = elements[1].value;
+    let race = elements[2].value;
+    let profession = elements[3].value;
+    let lvl = elements[4].value;
+    let birth = new Date(elements[5].value).getTime();
+    let banned = elements[6].value;
+
+    const obj = {
+        "name": name,
+        "title": title,
+        "race": race,
+        "profession": profession,
+        "birthday": birth,
+        "banned": banned,
+        "level": lvl
+    };
+    const myJSON = JSON.stringify(obj);
+    $.ajax({
+        contentType: 'application/json; charset=UTF-8',
+        type: "POST",
+        url: "/rest/players",
+        data: myJSON,
+        success: drawActive()
+    });
+}
+
+function drawActive() {
+    const page = document.getElementById('pages').getElementsByClassName('active');
+    const active = page.item(0).value;
+    getAccountsList(active);
+}
+
 function save(id) {
     let name = document.getElementById('input-name').value;
     let title = document.getElementById('input-title').value;
@@ -119,10 +159,4 @@ function save(id) {
         data: myJSON,
         success: drawActive()
     });
-}
-
-function drawActive() {
-    const page = document.getElementById('pages').getElementsByClassName('active');
-    const active = page.item(0).value;
-    getAccountsList(active);
 }

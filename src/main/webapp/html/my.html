@@ -39,9 +39,9 @@
 </div>
 <hr>
 <h2>Create new account:</h2>
-<div id="create">
-    <label for="name">Name: </label><input type="text" id="name" placeholder="name">
-    <label for="title">Title: </label><input type="text" id="title" placeholder="title">
+<form name="create" id="create">
+    <label for="name">Name: </label><input type="text" id="name" placeholder="name" minlength="1" maxlength="12" required>
+    <label for="title">Title: </label><input type="text" id="title" placeholder="title" minlength="1" maxlength="30" required>
     <label for="race">Race: </label><select id="race">
     <option value="HUMAN" selected="selected">HUMAN</option>
     <option value="DWARF">DWARF</option>
@@ -61,10 +61,13 @@
     <option value="WARLOCK">WARLOCK</option>
     <option value="DRUID">DRUID</option>
 </select>
+    <label for="level">Level: </label><input type="number" id="level" min="0" max="100" required>
+    <label for="birth">Birthday: </label><input type="date" id="birth" required>
     <label for="ban">Banned: </label><select id="ban">
     <option value="false" selected="selected">false</option>
     <option value="true">true</option>
 </select>
-</div>
+    <button class="btn create" onclick="saveUser()">Save</button>
+</form>
 </body>
 </html>

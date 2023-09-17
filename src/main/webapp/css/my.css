@@ -3,9 +3,10 @@ body {
     text-align: center;
 }
 table {
-    align-self: center;
+    width: 100%;
 }
-table.tb { text-align-all: center; border-collapse: collapse; width:300px; }
+table.tb { text-align-all: center; border-collapse: collapse;
+}
 .tb th, .tb td { padding: 5px; border: solid 1px #777; }
 .tb th { background-color: lightblue;}
 
@@ -37,10 +38,15 @@ button.active {
     border-radius: 5px;
 }
 
+form:invalid>#submit {
+    pointer-events: none;
+}
+
 button.hidden {
     visibility: hidden;
 }
 
 .count {
-    display: inline;
+    display: -webkit-inline-flex;
+    height: min-content;
 }
